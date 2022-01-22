@@ -1,0 +1,28 @@
+name: Deployment From Github To AWS
+on:
+  # activates the workflow when there is a push on the main branch
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # the operating system your job will run on
+    steps:
+      - name: Checkout Latest Repo
+        # checks out your repository under the GitHub workspace so that your workflow can access it
+        uses: actions/checkout@master
+        
+      - name: Generate Deployment Package 
+      # zip all files except .git
+        run: zip -r deploy.zip * -x '*.git*'
+          
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: AKIATI3RCF454ZYQ3TAU
+          aws_secret_key: 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
+          application_name: html
+          environment_name: html-dev3
+          version_label: 12345
+          region: us-west-2
+          deployment_package: deploy.zip
